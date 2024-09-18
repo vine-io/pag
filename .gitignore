@@ -1,0 +1,11 @@
+.idea
+
+.DS_Store
+
+testdata
+
+*.db
+dist/
+vendor/
+
+_output
