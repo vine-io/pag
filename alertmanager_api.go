@@ -22,6 +22,8 @@ type AlertManagerYAML struct {
 
 	Route AlertManagerRoute `json:"route,omitempty"`
 
+	Receivers []AlertManagerReceiverYAML `json:"receivers,omitempty"`
+
 	InhibitRule []AlertManagerInhibitRuleYAML `json:"inhibit_rule,omitempty"`
 }
 
@@ -197,7 +199,10 @@ func (api *alertManagerAPI) load() error {
 func (api *alertManagerAPI) ConfigYAML() AlertManagerYAML {
 	var out AlertManagerYAML
 	out = *api.yml
-	*out.Global = *api.yml.Global
+	if api.yml.Global != nil {
+		out.Global = &AlertManagerGlobalYAML{}
+		*out.Global = *api.yml.Global
+	}
 	return out
 }
 
