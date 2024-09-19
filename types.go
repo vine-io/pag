@@ -1,8 +1,8 @@
 package pag
 
 type ServiceDiscoveryEndpoint struct {
-	Targets []string          `json:"targets" yaml:"targets"`
-	Labels  map[string]string `json:"labels" yaml:"labels"`
+	Targets []string          `json:"targets"`
+	Labels  map[string]string `json:"labels"`
 }
 
 type ServiceDiscovery struct {
@@ -12,18 +12,18 @@ type ServiceDiscovery struct {
 }
 
 type Rule struct {
-	Alert       string            `json:"alert" yaml:"alert"`
-	Expr        string            `json:"expr" yaml:"expr"`
-	For         string            `json:"for" yaml:"for"`
-	Labels      map[string]string `json:"labels" yaml:"labels"`
-	Annotations map[string]string `json:"annotations" yaml:"annotations"`
+	Alert       string            `json:"alert"`
+	Expr        string            `json:"expr"`
+	For         string            `json:"for"`
+	Labels      map[string]string `json:"labels"`
+	Annotations map[string]string `json:"annotations"`
 }
 
 type RuleGroup struct {
-	Name  string `json:"name" yaml:"name"`
-	Rules []Rule `json:"rules" yaml:"rules"`
+	Name  string `json:"name"`
+	Rules []Rule `json:"rules"`
 }
 
 type RuleGroups struct {
-	Groups []RuleGroup `json:"groups" yaml:"groups"`
+	Groups []RuleGroup `json:"groups"`
 }

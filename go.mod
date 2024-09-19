@@ -3,9 +3,11 @@ module github.com/vine-io/pag
 go 1.19
 
 require (
+	github.com/go-openapi/strfmt v0.23.0
 	github.com/grafana/grafana-openapi-client-go v0.0.0-20240826142251-d1c93bae4198
 	github.com/prometheus/client_golang v1.20.4
 	github.com/prometheus/common v0.59.1
+	github.com/stretchr/testify v1.9.0
 	sigs.k8s.io/yaml v1.4.0
 )
 
@@ -23,7 +25,6 @@ require (
 	github.com/go-openapi/loads v0.22.0 // indirect
 	github.com/go-openapi/runtime v0.28.0 // indirect
 	github.com/go-openapi/spec v0.21.0 // indirect
-	github.com/go-openapi/strfmt v0.23.0 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
 	github.com/go-openapi/validate v0.24.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect

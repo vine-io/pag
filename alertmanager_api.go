@@ -16,136 +16,136 @@ import (
 )
 
 type AlertManagerYAML struct {
-	Global *AlertManagerGlobalYAML `yaml:"global,omitempty"`
+	Global *AlertManagerGlobalYAML `json:"global,omitempty"`
 
-	Templates []string `yaml:"templates,omitempty"`
+	Templates []string `json:"templates,omitempty"`
 
-	Route AlertManagerRoute `yaml:"route,omitempty"`
+	Route AlertManagerRoute `json:"route,omitempty"`
 
-	InhibitRule []AlertManagerInhibitRuleYAML `yaml:"inhibit_rule,omitempty"`
+	InhibitRule []AlertManagerInhibitRuleYAML `json:"inhibit_rule,omitempty"`
 }
 
 type AlertManagerGlobalYAML struct {
-	SmtpFrom             string `yaml:"smtp_from,omitempty"`
-	SmtpSmartHost        string `yaml:"smtp_smarthost,omitempty"`
-	SmtpHello            string `yaml:"smtp_hello,omitempty"`
-	SmtpAuthUsername     string `yaml:"smtp_auth_username,omitempty"`
-	SmtpAuthPassword     string `yaml:"smtp_auth_password,omitempty"`
-	SmtpAuthPasswordFile string `yaml:"smtp_auth_password_file,omitempty"`
-	SmtpAuthIdentify     string `yaml:"smtp_auth_identity,omitempty"`
-	SmtpAuthSecret       string `yaml:"smtp_auth_secret,omitempty"`
-	SmtpRequireTLS       bool   `yaml:"smtp_require_tls,omitempty"`
+	SmtpFrom             string `json:"smtp_from,omitempty"`
+	SmtpSmartHost        string `json:"smtp_smarthost,omitempty"`
+	SmtpHello            string `json:"smtp_hello,omitempty"`
+	SmtpAuthUsername     string `json:"smtp_auth_username,omitempty"`
+	SmtpAuthPassword     string `json:"smtp_auth_password,omitempty"`
+	SmtpAuthPasswordFile string `json:"smtp_auth_password_file,omitempty"`
+	SmtpAuthIdentify     string `json:"smtp_auth_identity,omitempty"`
+	SmtpAuthSecret       string `json:"smtp_auth_secret,omitempty"`
+	SmtpRequireTLS       bool   `json:"smtp_require_tls,omitempty"`
 
-	//SlackAPIURL     string `yaml:"slack_api_url,omitempty"`
-	//SlackAPIURLFile string `yaml:"slack_api_url_file,omitempty"`
+	//SlackAPIURL     string `json:"slack_api_url,omitempty"`
+	//SlackAPIURLFile string `json:"slack_api_url_file,omitempty"`
 	//
-	//VictoropsAPIKey     string `yaml:"victorops_api_key,omitempty"`
-	//VictoropsAPIKeyFile string `yaml:"victorops_api_key_file,omitempty"`
-	//VictoropsAPIURL     string `yaml:"victorops_api_url,omitempty"`
+	//VictoropsAPIKey     string `json:"victorops_api_key,omitempty"`
+	//VictoropsAPIKeyFile string `json:"victorops_api_key_file,omitempty"`
+	//VictoropsAPIURL     string `json:"victorops_api_url,omitempty"`
 	//
-	//PagerDutyURL string `yaml:"pagerduty_url,omitempty"`
+	//PagerDutyURL string `json:"pagerduty_url,omitempty"`
 	//
-	//OpsGenieAPIKey     string `yaml:"opsgenie_api_key,omitempty"`
-	//OpsGenieAPIKeyFile string `yaml:"opsgenie_api_key_file,omitempty"`
-	//OpsGenieAPIURL     string `yaml:"opsgenie_api_url,omitempty"`
+	//OpsGenieAPIKey     string `json:"opsgenie_api_key,omitempty"`
+	//OpsGenieAPIKeyFile string `json:"opsgenie_api_key_file,omitempty"`
+	//OpsGenieAPIURL     string `json:"opsgenie_api_url,omitempty"`
 
-	WechatAPIURL    string `yaml:"wechat_api_url,omitempty"`
-	WechatAPISecret string `yaml:"wechat_api_secret,omitempty"`
-	WechatAPICorpID string `yaml:"wechat_api_corp_id,omitempty"`
+	WechatAPIURL    string `json:"wechat_api_url,omitempty"`
+	WechatAPISecret string `json:"wechat_api_secret,omitempty"`
+	WechatAPICorpID string `json:"wechat_api_corp_id,omitempty"`
 
-	//TelegramAPIURL string `yaml:"telegram_api_url,omitempty"`
-	//WebexAPIURL    string `yaml:"webex_api_url,omitempty"`
+	//TelegramAPIURL string `json:"telegram_api_url,omitempty"`
+	//WebexAPIURL    string `json:"webex_api_url,omitempty"`
 
-	HTTPConfig *config.HTTPClientConfig `yaml:"http_config,omitempty"`
+	HTTPConfig *config.HTTPClientConfig `json:"http_config,omitempty"`
 
-	ResolveTimeout model.Duration `yaml:"resolve_timeout,omitempty"`
+	ResolveTimeout model.Duration `json:"resolve_timeout,omitempty"`
 }
 
 type AlertManagerRoute struct {
-	Receiver string   `yaml:"receiver,omitempty"`
-	GroupBy  []string `yaml:"group_by,omitempty"`
-	Continue bool     `yaml:"continue,omitempty"`
+	Receiver string   `json:"receiver,omitempty"`
+	GroupBy  []string `json:"group_by,omitempty"`
+	Continue bool     `json:"continue,omitempty"`
 
-	Match    map[string]string `yaml:"match,omitempty"`
-	MatchRe  map[string]string `yaml:"match_re,omitempty"`
-	Matchers []string          `yaml:"matchers,omitempty"`
+	Match    map[string]string `json:"match,omitempty"`
+	MatchRe  map[string]string `json:"match_re,omitempty"`
+	Matchers []string          `json:"matchers,omitempty"`
 
-	GroupWaits    model.Duration `yaml:"group_waits,omitempty"`
-	GroupInterval model.Duration `yaml:"group_interval,omitempty"`
+	GroupWaits    model.Duration `json:"group_waits,omitempty"`
+	GroupInterval model.Duration `json:"group_interval,omitempty"`
 
-	RepeatInterval model.Duration `yaml:"repeat_interval,omitempty"`
+	RepeatInterval model.Duration `json:"repeat_interval,omitempty"`
 
-	MuteTimeIntervals []string `yaml:"mute_time_intervals,omitempty"`
+	MuteTimeIntervals []string `json:"mute_time_intervals,omitempty"`
 
-	ActiveTimeIntervals []string `yaml:"active_time_intervals,omitempty"`
+	ActiveTimeIntervals []string `json:"active_time_intervals,omitempty"`
 
-	Routes []*AlertManagerRoute `yaml:"routes,omitempty"`
+	Routes []*AlertManagerRoute `json:"routes,omitempty"`
 }
 
 type AlertManagerReceiverYAML struct {
-	Name string `yaml:"name"`
+	Name string `json:"name"`
 
-	EmailConfigs []ReceiverEmailConfig `yaml:"email_config,omitempty"`
+	EmailConfigs []ReceiverEmailConfig `json:"email_config,omitempty"`
 
-	WebhookConfigs []ReceiverWebhookYAML `yaml:"webhook_configs,omitempty"`
+	WebhookConfigs []ReceiverWebhookYAML `json:"webhook_configs,omitempty"`
 
-	WeChatConfigs []ReceiverWechatYAML `yaml:"wechat_configs,omitempty"`
+	WeChatConfigs []ReceiverWechatYAML `json:"wechat_configs,omitempty"`
 }
 
 type AlertManagerInhibitRuleYAML struct {
-	TargetMatch    map[string]string `yaml:"target_match,omitempty"`
-	TargetMatchRe  map[string]string `yaml:"target_match_re,omitempty"`
-	TargetMatchers []string          `yaml:"target_matchers,omitempty"`
+	TargetMatch    map[string]string `json:"target_match,omitempty"`
+	TargetMatchRe  map[string]string `json:"target_match_re,omitempty"`
+	TargetMatchers []string          `json:"target_matchers,omitempty"`
 
-	SourceMatch    map[string]string `yaml:"source_match,omitempty"`
-	SourceMatchRe  map[string]string `yaml:"source_match_re,omitempty"`
-	SourceMatchers []string          `yaml:"source_matchers,omitempty"`
+	SourceMatch    map[string]string `json:"source_match,omitempty"`
+	SourceMatchRe  map[string]string `json:"source_match_re,omitempty"`
+	SourceMatchers []string          `json:"source_matchers,omitempty"`
 
-	Equal []string `yaml:"equal,omitempty"`
+	Equal []string `json:"equal,omitempty"`
 }
 
 type ReceiverEmailConfig struct {
-	SendResolved bool   `yaml:"send_resolved,omitempty"`
-	To           string `yaml:"to"`
-	From         string `yaml:"from,omitempty"`
-	SmartHost    string `yaml:"smart_host,omitempty"`
-	Hello        string `yaml:"hello,omitempty"`
+	SendResolved bool   `json:"send_resolved,omitempty"`
+	To           string `json:"to"`
+	From         string `json:"from,omitempty"`
+	SmartHost    string `json:"smart_host,omitempty"`
+	Hello        string `json:"hello,omitempty"`
 
-	AuthUsername     string `yaml:"auth_username,omitempty"`
-	AuthPassword     string `yaml:"auth_password,omitempty"`
-	AuthPasswordFile string `yaml:"auth_password_file,omitempty"`
-	AuthSecret       string `yaml:"auth_secret,omitempty"`
-	AuthIdentify     string `yaml:"auth_identity,omitempty"`
+	AuthUsername     string `json:"auth_username,omitempty"`
+	AuthPassword     string `json:"auth_password,omitempty"`
+	AuthPasswordFile string `json:"auth_password_file,omitempty"`
+	AuthSecret       string `json:"auth_secret,omitempty"`
+	AuthIdentify     string `json:"auth_identity,omitempty"`
 
-	RequiredTLS bool `yaml:"required_tls,omitempty"`
+	RequiredTLS bool `json:"required_tls,omitempty"`
 
-	TlsConfig *config.TLSConfig `yaml:"tls_config,omitempty"`
+	TlsConfig *config.TLSConfig `json:"tls_config,omitempty"`
 
-	Html string `yaml:"html,omitempty"`
-	Text string `yaml:"text,omitempty"`
+	Html string `json:"html,omitempty"`
+	Text string `json:"text,omitempty"`
 
-	Headers map[string]string `yaml:"headers,omitempty"`
+	Headers map[string]string `json:"headers,omitempty"`
 }
 
 type ReceiverWebhookYAML struct {
-	SendResolved bool                     `yaml:"send_resolved,omitempty"`
-	URL          string                   `yaml:"url,omitempty"`
-	URLFile      string                   `yaml:"url_file,omitempty"`
-	HTTPConfig   *config.HTTPClientConfig `yaml:"http_config,omitempty"`
-	MaxAlerts    uint32                   `yaml:"max_alerts,omitempty"`
+	SendResolved bool                     `json:"send_resolved,omitempty"`
+	URL          string                   `json:"url,omitempty"`
+	URLFile      string                   `json:"url_file,omitempty"`
+	HTTPConfig   *config.HTTPClientConfig `json:"http_config,omitempty"`
+	MaxAlerts    uint32                   `json:"max_alerts,omitempty"`
 }
 
 type ReceiverWechatYAML struct {
-	SendResolved bool   `yaml:"send_resolved,omitempty"`
-	APISecret    string `yaml:"api_secret,omitempty"`
-	APIURL       string `yaml:"api_url,omitempty"`
-	CorpID       string `yaml:"corp_id,omitempty"`
-	Message      string `yaml:"message,omitempty"`
-	MessageType  string `yaml:"message_type,omitempty"`
-	AgentID      string `yaml:"agent_id,omitempty"`
-	ToUser       string `yaml:"to_user,omitempty"`
-	ToParty      string `yaml:"to_party,omitempty"`
-	ToTag        string `yaml:"to_tag,omitempty"`
+	SendResolved bool   `json:"send_resolved,omitempty"`
+	APISecret    string `json:"api_secret,omitempty"`
+	APIURL       string `json:"api_url,omitempty"`
+	CorpID       string `json:"corp_id,omitempty"`
+	Message      string `json:"message,omitempty"`
+	MessageType  string `json:"message_type,omitempty"`
+	AgentID      string `json:"agent_id,omitempty"`
+	ToUser       string `json:"to_user,omitempty"`
+	ToParty      string `json:"to_party,omitempty"`
+	ToTag        string `json:"to_tag,omitempty"`
 }
 
 type AlertManagerAPI interface {
@@ -303,5 +303,3 @@ func (api *alertManagerAPI) Reload(ctx context.Context) error {
 	}
 	return err
 }
-
-// func (api *alertManagerAPI)

@@ -18,71 +18,71 @@ import (
 )
 
 type PrometheusYAML struct {
-	Global PrometheusGlobalYAML `yaml:"global"`
+	Global PrometheusGlobalYAML `json:"global"`
 
-	RuleFiles []string `yaml:"rule_files"`
+	RuleFiles []string `json:"rule_files"`
 
-	ScrapeConfigs []PrometheusScrapeConfigYAML `yaml:"scrape_configs"`
+	ScrapeConfigs []PrometheusScrapeConfigYAML `json:"scrape_configs"`
 }
 
 type PrometheusGlobalYAML struct {
 	// How frequently to scrape targets by default.
-	ScrapeInterval model.Duration `yaml:"scrape_interval,omitempty"`
+	ScrapeInterval model.Duration `json:"scrape_interval,omitempty"`
 	// The default timeout when scraping targets.
-	ScrapeTimeout model.Duration `yaml:"scrape_timeout,omitempty"`
+	ScrapeTimeout model.Duration `json:"scrape_timeout,omitempty"`
 	// How frequently to evaluate rules by default.
-	EvaluationInterval model.Duration `yaml:"evaluation_interval,omitempty"`
+	EvaluationInterval model.Duration `json:"evaluation_interval,omitempty"`
 	// Offset the rule evaluation timestamp of this particular group by the
 	// specified duration into the past to ensure the underlying metrics have been received.
-	RuleQueryOffset model.Duration `yaml:"rule_query_offset,omitempty"`
+	RuleQueryOffset model.Duration `json:"rule_query_offset,omitempty"`
 	// File to which PromQL queries are logged.
-	QueryLogFile string `yaml:"query_log_file,omitempty"`
+	QueryLogFile string `json:"query_log_file,omitempty"`
 	// File to which scrape failures are logged.
-	ScrapeFailureLogFile string `yaml:"scrape_failure_log_file,omitempty"`
+	ScrapeFailureLogFile string `json:"scrape_failure_log_file,omitempty"`
 	// The labels to add to any timeseries that this Prometheus instance scrapes.
-	ExternalLabels map[string]string `yaml:"external_labels,omitempty"`
+	ExternalLabels map[string]string `json:"external_labels,omitempty"`
 }
 
 type PrometheusScrapeConfigYAML struct {
 	// The job name to which the job label is set by default.
-	JobName string `yaml:"job_name"`
+	JobName string `json:"job_name"`
 	// Indicator whether the scraped metrics should remain unmodified.
-	HonorLabels bool `yaml:"honor_labels,omitempty"`
+	HonorLabels bool `json:"honor_labels,omitempty"`
 	// Indicator whether the scraped timestamps should be respected.
-	HonorTimestamps bool `yaml:"honor_timestamps"`
+	HonorTimestamps bool `json:"honor_timestamps"`
 	// Indicator whether to track the staleness of the scraped timestamps.
-	TrackTimestampsStaleness bool `yaml:"track_timestamps_staleness"`
+	TrackTimestampsStaleness bool `json:"track_timestamps_staleness"`
 	// A set of query parameters with which the target is scraped.
-	Params urlpkg.Values `yaml:"params,omitempty"`
+	Params urlpkg.Values `json:"params,omitempty"`
 	// How frequently to scrape the targets of this scrape config.
-	ScrapeInterval model.Duration `yaml:"scrape_interval,omitempty"`
+	ScrapeInterval model.Duration `json:"scrape_interval,omitempty"`
 	// The timeout for scraping targets of this config.
-	ScrapeTimeout model.Duration `yaml:"scrape_timeout,omitempty"`
+	ScrapeTimeout model.Duration `json:"scrape_timeout,omitempty"`
 	// Whether to scrape a classic histogram that is also exposed as a native histogram.
-	ScrapeClassicHistograms bool `yaml:"scrape_classic_histograms,omitempty"`
+	ScrapeClassicHistograms bool `json:"scrape_classic_histograms,omitempty"`
 	// File to which scrape failures are logged.
-	ScrapeFailureLogFile string `yaml:"scrape_failure_log_file,omitempty"`
+	ScrapeFailureLogFile string `json:"scrape_failure_log_file,omitempty"`
 	// The HTTP resource path on which to fetch metrics from targets.
-	MetricsPath string `yaml:"metrics_path,omitempty"`
+	MetricsPath string `json:"metrics_path,omitempty"`
 	// The URL scheme with which to fetch metrics from targets.
-	Scheme string `yaml:"scheme,omitempty"`
+	Scheme string `json:"scheme,omitempty"`
 	// Indicator whether to request compressed response from the target.
-	EnableCompression bool `yaml:"enable_compression"`
+	EnableCompression bool `json:"enable_compression"`
 
 	// We cannot do proper Go type embedding below as the parser will then parse
 	// values arbitrarily into the overflow maps of further-down types.
 
-	HTTPClientConfig config.HTTPClientConfig `yaml:",inline"`
+	HTTPClientConfig config.HTTPClientConfig `json:",inline"`
 
-	StaticConfig []ServiceDiscoveryEndpoint `yaml:"static_configs,omitempty"`
+	StaticConfig []ServiceDiscoveryEndpoint `json:"static_configs,omitempty"`
 
-	FileSDConfigs []FileSDConfig `yaml:"file_sd_configs,omitempty"`
+	FileSDConfigs []FileSDConfig `json:"file_sd_configs,omitempty"`
 }
 
 type FileSDConfig struct {
-	Files []string `yaml:"files"`
+	Files []string `json:"files"`
 
-	RefreshInterval model.Duration `yaml:"refresh_interval,omitempty"`
+	RefreshInterval model.Duration `json:"refresh_interval,omitempty"`
 }
 
 type PrometheusAPI interface {
@@ -106,7 +106,6 @@ type PrometheusAPI interface {
 	Alerts(ctx context.Context) (prometheusv1.AlertsResult, error)
 }
 
-// @TIP: hello
 func NewPrometheusAPI(hc *http.Client, cfg *PrometheusConfig) (PrometheusAPI, error) {
 	address := cfg.Endpoint
 	if !strings.HasPrefix(address, "http") {
