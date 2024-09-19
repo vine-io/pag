@@ -7,6 +7,7 @@ import (
 	urlpkg "net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/api"
@@ -85,10 +86,12 @@ type FileSDConfig struct {
 }
 
 type PrometheusAPI interface {
-	ConfigYAML() *PrometheusYAML
+	ConfigYAML() PrometheusYAML
 	Healthy(ctx context.Context) error
 	Ready(ctx context.Context) error
 	Reload(ctx context.Context) error
+
+	Values(ctx context.Context) (model.LabelValues, error)
 
 	Query(ctx context.Context, query string, ts time.Time, opts ...prometheusv1.Option) (model.Value, prometheusv1.Warnings, error)
 	QueryRange(ctx context.Context, query string, rg prometheusv1.Range, opts ...prometheusv1.Option) (model.Value, prometheusv1.Warnings, error)
@@ -101,6 +104,34 @@ type PrometheusAPI interface {
 	GetRules(ctx context.Context) (prometheusv1.RulesResult, error)
 
 	Alerts(ctx context.Context) (prometheusv1.AlertsResult, error)
+}
+
+// @TIP: hello
+func NewPrometheusAPI(hc *http.Client, cfg *PrometheusConfig) (PrometheusAPI, error) {
+	address := cfg.Endpoint
+	if !strings.HasPrefix(address, "http") {
+		address = "http://" + address
+	}
+
+	apiCfg := api.Config{
+		Address: address,
+		Client:  hc,
+	}
+	pc, err := api.NewClient(apiCfg)
+	if err != nil {
+		return nil, err
+	}
+
+	pa := &prometheusAPI{
+		cfg: cfg,
+		c:   pc,
+	}
+
+	if err = pa.load(); err != nil {
+		return nil, err
+	}
+
+	return pa, nil
 }
 
 type prometheusAPI struct {
@@ -129,8 +160,8 @@ func (pa *prometheusAPI) newAPI() prometheusv1.API {
 	return prometheusv1.NewAPI(pa.c)
 }
 
-func (pa *prometheusAPI) ConfigYAML() *PrometheusYAML {
-	return pa.py
+func (pa *prometheusAPI) ConfigYAML() PrometheusYAML {
+	return *pa.py
 }
 
 func (pa *prometheusAPI) Healthy(ctx context.Context) error {
@@ -173,6 +204,15 @@ func (pa *prometheusAPI) Reload(ctx context.Context) error {
 		return err
 	}
 	return err
+}
+
+func (pa *prometheusAPI) Values(ctx context.Context) (model.LabelValues, error) {
+	values, _, err := pa.newAPI().LabelValues(ctx, "__name__", nil, time.Time{}, time.Time{})
+	if err != nil {
+		return nil, err
+	}
+
+	return values, nil
 }
 
 func (pa *prometheusAPI) Query(ctx context.Context, query string, ts time.Time, opts ...prometheusv1.Option) (model.Value, prometheusv1.Warnings, error) {

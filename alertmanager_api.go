@@ -20,7 +20,7 @@ type AlertManagerYAML struct {
 
 	Templates []string `yaml:"templates,omitempty"`
 
-	Route *AlertManagerRoute `yaml:"route,omitempty"`
+	Route AlertManagerRoute `yaml:"route,omitempty"`
 
 	InhibitRule []AlertManagerInhibitRuleYAML `yaml:"inhibit_rule,omitempty"`
 }
@@ -36,25 +36,25 @@ type AlertManagerGlobalYAML struct {
 	SmtpAuthSecret       string `yaml:"smtp_auth_secret,omitempty"`
 	SmtpRequireTLS       bool   `yaml:"smtp_require_tls,omitempty"`
 
-	SlackAPIURL     string `yaml:"slack_api_url,omitempty"`
-	SlackAPIURLFile string `yaml:"slack_api_url_file,omitempty"`
-
-	VictoropsAPIKey     string `yaml:"victorops_api_key,omitempty"`
-	VictoropsAPIKeyFile string `yaml:"victorops_api_key_file,omitempty"`
-	VictoropsAPIURL     string `yaml:"victorops_api_url,omitempty"`
-
-	PagerDutyURL string `yaml:"pagerduty_url,omitempty"`
-
-	OpsGenieAPIKey     string `yaml:"opsgenie_api_key,omitempty"`
-	OpsGenieAPIKeyFile string `yaml:"opsgenie_api_key_file,omitempty"`
-	OpsGenieAPIURL     string `yaml:"opsgenie_api_url,omitempty"`
+	//SlackAPIURL     string `yaml:"slack_api_url,omitempty"`
+	//SlackAPIURLFile string `yaml:"slack_api_url_file,omitempty"`
+	//
+	//VictoropsAPIKey     string `yaml:"victorops_api_key,omitempty"`
+	//VictoropsAPIKeyFile string `yaml:"victorops_api_key_file,omitempty"`
+	//VictoropsAPIURL     string `yaml:"victorops_api_url,omitempty"`
+	//
+	//PagerDutyURL string `yaml:"pagerduty_url,omitempty"`
+	//
+	//OpsGenieAPIKey     string `yaml:"opsgenie_api_key,omitempty"`
+	//OpsGenieAPIKeyFile string `yaml:"opsgenie_api_key_file,omitempty"`
+	//OpsGenieAPIURL     string `yaml:"opsgenie_api_url,omitempty"`
 
 	WechatAPIURL    string `yaml:"wechat_api_url,omitempty"`
 	WechatAPISecret string `yaml:"wechat_api_secret,omitempty"`
 	WechatAPICorpID string `yaml:"wechat_api_corp_id,omitempty"`
 
-	TelegramAPIURL string `yaml:"telegram_api_url,omitempty"`
-	WebexAPIURL    string `yaml:"webex_api_url,omitempty"`
+	//TelegramAPIURL string `yaml:"telegram_api_url,omitempty"`
+	//WebexAPIURL    string `yaml:"webex_api_url,omitempty"`
 
 	HTTPConfig *config.HTTPClientConfig `yaml:"http_config,omitempty"`
 
@@ -149,11 +149,25 @@ type ReceiverWechatYAML struct {
 }
 
 type AlertManagerAPI interface {
-	ConfigYAML() *AlertManagerYAML
+	ConfigYAML() AlertManagerYAML
 
 	Healthy(ctx context.Context) error
 	Ready(ctx context.Context) error
 	Reload(ctx context.Context) error
+}
+
+func NewAlertManagerAPI(hc *http.Client, cfg *AlertManagerConfig) (AlertManagerAPI, error) {
+	api := &alertManagerAPI{
+		cfg: cfg,
+		hc:  hc,
+	}
+
+	err := api.load()
+	if err != nil {
+		return nil, err
+	}
+
+	return api, nil
 }
 
 type alertManagerAPI struct {
@@ -180,12 +194,15 @@ func (api *alertManagerAPI) load() error {
 	return nil
 }
 
-func (api *alertManagerAPI) ConfigYAML() *AlertManagerYAML {
-	return api.yml
+func (api *alertManagerAPI) ConfigYAML() AlertManagerYAML {
+	var out AlertManagerYAML
+	out = *api.yml
+	*out.Global = *api.yml.Global
+	return out
 }
 
 func (api *alertManagerAPI) endpoint() *urlpkg.URL {
-	endpoint := api.cfg.Host
+	endpoint := api.cfg.Endpoint
 	if !strings.HasPrefix(endpoint, "http") {
 		endpoint = "http://" + endpoint
 	}
@@ -215,7 +232,7 @@ func (api *alertManagerAPI) Do(ctx context.Context, req *http.Request) (*http.Re
 	resp, err := api.hc.Do(req)
 	defer func() {
 		if resp != nil {
-			resp.Body.Close()
+			_ = resp.Body.Close()
 		}
 	}()
 
@@ -286,3 +303,5 @@ func (api *alertManagerAPI) Reload(ctx context.Context) error {
 	}
 	return err
 }
+
+// func (api *alertManagerAPI)

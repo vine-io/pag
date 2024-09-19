@@ -31,14 +31,14 @@ func (cfg *Config) Validate() error {
 }
 
 type PrometheusConfig struct {
-	Host string `json:"host"`
+	Endpoint string `json:"endpoint"`
 
 	ConfigYAML string `json:"config_yaml"`
 }
 
 func (cfg *PrometheusConfig) Validate() error {
-	if cfg.Host == "" {
-		return errors.New("host is required")
+	if cfg.Endpoint == "" {
+		return errors.New("endpoint is required")
 	}
 
 	if cfg.ConfigYAML == "" {
@@ -53,14 +53,14 @@ func (cfg *PrometheusConfig) Validate() error {
 }
 
 type AlertManagerConfig struct {
-	Host string `json:"host"`
+	Endpoint string `json:"endpoint"`
 
 	ConfigYAML string `json:"config_yaml"`
 }
 
 func (cfg *AlertManagerConfig) Validate() error {
-	if cfg.Host == "" {
-		return errors.New("host is required")
+	if cfg.Endpoint == "" {
+		return errors.New("endpoint is required")
 	}
 
 	if cfg.ConfigYAML == "" {
@@ -75,13 +75,16 @@ func (cfg *AlertManagerConfig) Validate() error {
 }
 
 type GrafanaConfig struct {
-	Host string `json:"host"`
+	Endpoint string `json:"endpoint"`
 
 	APIToken string `json:"api_token"`
+
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 func (cfg *GrafanaConfig) Validate() error {
-	if cfg.Host == "" {
+	if cfg.Endpoint == "" {
 		return errors.New("host is required")
 	}
 
