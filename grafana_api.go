@@ -18,14 +18,16 @@ import (
 type GrafanaAPI interface {
 	AddAPIKey(ctx context.Context, name string, ttl int64) (string, error)
 
+	GetDataSourceByID(ctx context.Context, id string) (*models.DataSource, error)
 	GetDataSourceByName(ctx context.Context, name string) (*models.DataSource, error)
 	AddDataSource(ctx context.Context, ds *models.DataSource) (*models.DataSource, error)
+	DeleteDataSource(ctx context.Context, uid string) (string, error)
 
 	FindOrCreateFolder(ctx context.Context, title string) (*models.Folder, error)
 	DeleteFolder(ctx context.Context, uid string) (string, error)
 
-	GetDashboardByUID(ctx context.Context, uid string) ([]byte, error)
-	UpsertDashboard(ctx context.Context, folderUID string, dash any) ([]byte, error)
+	GetDashboardByUID(ctx context.Context, uid string) (*models.DashboardFullWithMeta, error)
+	UpsertDashboard(ctx context.Context, folderUID string, dash any) (*models.PostDashboardOKBody, error)
 	DeleteDashboard(ctx context.Context, uid string) (string, error)
 }
 
@@ -109,6 +111,21 @@ func (api *grafanaAPI) AddAPIKey(ctx context.Context, name string, ttl int64) (s
 	return rsp.Payload.Key, nil
 }
 
+func (api *grafanaAPI) GetDataSourceByID(ctx context.Context, id string) (*models.DataSource, error) {
+	params := &datasources.GetDataSourceByIDParams{
+		ID:         id,
+		Context:    ctx,
+		HTTPClient: api.hc,
+	}
+
+	rsp, err := api.gc.Datasources.GetDataSourceByIDWithParams(params)
+	if err != nil {
+		return nil, err
+	}
+
+	return rsp.Payload, nil
+}
+
 func (api *grafanaAPI) GetDataSourceByName(ctx context.Context, name string) (*models.DataSource, error) {
 	params := &datasources.GetDataSourceByNameParams{
 		Name:       name,
@@ -149,6 +166,21 @@ func (api *grafanaAPI) AddDataSource(ctx context.Context, ds *models.DataSource)
 		return nil, err
 	}
 	return rsp.Payload.Datasource, nil
+}
+
+func (api *grafanaAPI) DeleteDataSource(ctx context.Context, id string) (string, error) {
+	params := &datasources.DeleteDataSourceByIDParams{
+		ID:         id,
+		Context:    ctx,
+		HTTPClient: api.hc,
+	}
+
+	rsp, err := api.gc.Datasources.DeleteDataSourceByIDWithParams(params)
+	if err != nil {
+		return "", err
+	}
+
+	return rsp.Payload.Message, nil
 }
 
 func (api *grafanaAPI) FindOrCreateFolder(ctx context.Context, title string) (*models.Folder, error) {
@@ -208,7 +240,7 @@ func (api *grafanaAPI) DeleteFolder(ctx context.Context, uid string) (string, er
 	return *rsp.Payload.Title, nil
 }
 
-func (api *grafanaAPI) GetDashboardByUID(ctx context.Context, uid string) ([]byte, error) {
+func (api *grafanaAPI) GetDashboardByUID(ctx context.Context, uid string) (*models.DashboardFullWithMeta, error) {
 	params := &dashboards.GetDashboardByUIDParams{
 		UID:        uid,
 		Context:    ctx,
@@ -220,15 +252,16 @@ func (api *grafanaAPI) GetDashboardByUID(ctx context.Context, uid string) ([]byt
 		return nil, err
 	}
 
-	return rsp.Payload.MarshalBinary()
+	return rsp.Payload, nil
 }
 
-func (api *grafanaAPI) UpsertDashboard(ctx context.Context, folderUID string, dash any) ([]byte, error) {
+func (api *grafanaAPI) UpsertDashboard(ctx context.Context, folderUID string, dash any) (*models.PostDashboardOKBody, error) {
 	params := &dashboards.PostDashboardParams{
 		Body: &models.SaveDashboardCommand{
 			UpdatedAt: strfmt.DateTime{},
 			Dashboard: dash,
 			FolderUID: folderUID,
+			Overwrite: true,
 		},
 		Context:    ctx,
 		HTTPClient: api.hc,
@@ -239,8 +272,7 @@ func (api *grafanaAPI) UpsertDashboard(ctx context.Context, folderUID string, da
 		return nil, err
 	}
 
-	data, err := rsp.Payload.MarshalBinary()
-	return data, err
+	return rsp.Payload, nil
 }
 
 func (api *grafanaAPI) DeleteDashboard(ctx context.Context, uid string) (string, error) {

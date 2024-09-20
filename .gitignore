@@ -1,9 +1,13 @@
 .idea
-
 .DS_Store
+.vscode
 
 *.db
+*.tar
+*.gz
+*.bz2
+*.tmp
+
 dist/
 vendor/
-
 _output
